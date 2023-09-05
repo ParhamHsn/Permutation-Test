@@ -1,0 +1,62 @@
+---
+title: "Permutation Test"
+author: "Parham"
+date: "4/25/2022"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+You can see presentation from below link.
+
+**https://www.jwilber.me/permutationtest/**
+
+```{r}
+library(tidyverse)
+
+treat <- c(5.8,8.3,6.2,4.3,7.7,7.2,7.1,4.8,7.4,8.3,4.1,4.4)
+control <- c(5.1,4.4,3.9,4.6,5.4,4.6,5.6,5.8,2.8,4.2,4.1,3.8)
+
+z <- c(treat,control)
+
+r <- sample(1:24,12)
+r
+
+z[r]
+z[-r]
+
+d <- c()
+
+n <- 1000
+
+for (i in 1:n) 
+{
+  r <- sample(1:24,12)
+  d <- c(d,mean(z[r]) - mean(z[-r]))
+}
+
+orginal_mean <- mean(treat) - mean(control)
+d[1:20]
+d = as_tibble(d)
+ggplot(d,aes(value))+ 
+  geom_histogram()+
+  geom_vline(xintercept = orginal_mean)
+p_val = sum(d >= orginal_mean) / n
+p_val
+```
+
+You can see other options for `perm.test` by using R help `?prem.test`
+
+```{r}
+library(jmuOutlier)
+#?perm.test
+perm.test(treat,control,stat=mean)
+
+t.test(treat,control)
+wilcox.test(treat,control)
+```
